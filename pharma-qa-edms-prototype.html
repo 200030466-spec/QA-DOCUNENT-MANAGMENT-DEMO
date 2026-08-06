@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Veritas QMS — AI-Powered eDMS for Quality Assurance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blue-900:#0B2E52;
+  --blue-700:#134A82;
+  --blue-600:#1B5EA3;
+  --blue-500:#2E77C4;
+  --blue-100:#E7F0FA;
+  --teal-600:#0C8C86;
+  --teal-100:#E3F6F4;
+  --bg:#F5F7FA;
+  --panel:#FFFFFF;
+  --line:#E3E8EE;
+  --line-soft:#EDF1F5;
+  --ink-900:#151E2B;
+  --ink-700:#3B4757;
+  --ink-500:#6B7889;
+  --ink-400:#8B96A5;
+  --green-600:#1B8A57;
+  --green-100:#E5F5EC;
+  --amber-600:#B4740E;
+  --amber-100:#FBF0DD;
+  --red-600:#C4341F;
+  --red-100:#FBE7E3;
+  --radius-lg:16px;
+  --radius-md:12px;
+  --radius-sm:8px;
+  --shadow-card:0 1px 2px rgba(15,35,64,0.04), 0 8px 24px -12px rgba(15,35,64,0.10);
+  --shadow-pop:0 12px 40px -8px rgba(15,35,64,0.22);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:'IBM Plex Sans',-apple-system,Segoe UI,sans-serif;
+  background:var(--bg);
+  color:var(--ink-900);
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+}
+.mono{font-family:'IBM Plex Mono',monospace;}
+.screen{display:none;}
+.screen.active{display:block;}
+a{text-decoration:none;color:inherit;}
+button{font-family:inherit;cursor:pointer;}
+
+/* ===================== LOGIN ===================== */
+#screen-login.active{
+  display:flex;
+  min-height:100vh;
+}
+.login-visual{
+  flex:1.1;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(255,255,255,0.06) 0, transparent 45%),
+    radial-gradient(circle at 85% 80%, rgba(255,255,255,0.05) 0, transparent 40%),
+    linear-gradient(155deg,var(--blue-900) 0%, var(--blue-700) 55%, var(--blue-600) 100%);
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  padding:56px 56px;
+  color:#fff;
+  overflow:hidden;
+}
+.login-visual::before{
+  content:"";
+  position:absolute; inset:0;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(255,255,255,0.045) 0 1px, transparent 1px 64px),
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.045) 0 1px, transparent 1px 64px);
+  mask-image:radial-gradient(ellipse at 30% 30%, black, transparent 70%);
+}
+.login-brand{display:flex;align-items:center;gap:12px;position:relative;z-index:1;}
+.login-brand .mark{
+  width:44px;height:44px;border-radius:11px;
+  background:rgba(255,255,255,0.14);
+  border:1px solid rgba(255,255,255,0.25);
+  display:flex;align-items:center;justify-content:center;
+}
+.login-brand .name{font-weight:700;font-size:19px;letter-spacing:.2px;}
+.login-brand .tag{font-size:11px;letter-spacing:1.6px;color:rgba(255,255,255,0.65);text-transform:uppercase;margin-top:1px;}
+.login-hero{position:relative;z-index:1;max-width:480px;}
+.login-hero .eyebrow{
+  font-size:12px;letter-spacing:1.8px;text-transform:uppercase;color:var(--teal-100);
+  display:flex;align-items:center;gap:8px;margin-bottom:18px;font-weight:600;
+}
+.login-hero .eyebrow .dot{width:6px;height:6px;border-radius:50%;background:#5EEAD4;box-shadow:0 0 0 4px rgba(94,234,212,0.18);}
+.login-hero h1{font-size:34px;line-height:1.2;font-weight:700;margin:0 0 16px;letter-spacing:-.3px;}
+.login-hero p{font-size:15px;line-height:1.65;color:rgba(255,255,255,0.72);margin:0;}
+.login-stats{display:flex;gap:32px;position:relative;z-index:1;margin-top:40px;}
+.login-stats .stat b{display:block;font-size:26px;font-weight:700;}
+.login-stats .stat span{font-size:12px;color:rgba(255,255,255,0.6);}
+.login-foot{position:relative;z-index:1;font-size:12px;color:rgba(255,255,255,0.45);}
+
+.login-form-wrap{
+  flex:1;
+  display:flex;align-items:center;justify-content:center;
+  padding:40px;
+  background:var(--panel);
+}
+.login-form{width:100%;max-width:380px;}
+.login-form .lf-head{margin-bottom:32px;}
+.login-form .lf-head .kicker{font-size:12px;color:var(--ink-500);letter-spacing:.4px;margin-bottom:6px;}
+.login-form .lf-head h2{margin:0;font-size:23px;font-weight:700;color:var(--ink-900);}
+.field{margin-bottom:18px;}
+.field label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-700);margin-bottom:7px;letter-spacing:.1px;}
+.field input[type=text],.field input[type=password],.field select{
+  width:100%;padding:11px 13px;border-radius:var(--radius-sm);
+  border:1px solid var(--line);background:#FBFCFE;
+  font-size:14px;color:var(--ink-900);font-family:inherit;
+  transition:border-color .15s, box-shadow .15s;
+}
+.field input:focus,.field select:focus{
+  outline:none;border-color:var(--blue-500);box-shadow:0 0 0 3px var(--blue-100);background:#fff;
+}
+.role-select{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.role-opt{
+  border:1.5px solid var(--line);border-radius:var(--radius-sm);
+  padding:12px 12px;cursor:pointer;background:#FBFCFE;
+  display:flex;flex-direction:column;gap:2px;
+  transition:all .15s;
+}
+.role-opt:hover{border-color:var(--blue-500);}
+.role-opt.selected{border-color:var(--blue-600);background:var(--blue-100);}
+.role-opt .rt{font-size:13px;font-weight:600;color:var(--ink-900);}
+.role-opt .rd{font-size:11.5px;color:var(--ink-500);}
+.btn-primary{
+  width:100%;padding:12px;border:none;border-radius:var(--radius-sm);
+  background:var(--blue-600);color:#fff;font-weight:600;font-size:14.5px;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:background .15s, transform .1s;margin-top:6px;
+}
+.btn-primary:hover{background:var(--blue-700);}
+.btn-primary:active{transform:scale(.99);}
+.login-alt{margin-top:18px;font-size:12.5px;color:var(--ink-500);text-align:center;}
+.login-alt a{color:var(--blue-600);font-weight:600;}
+
+/* ===================== APP SHELL ===================== */
+#screen-app{display:none;min-height:100vh;}
+#screen-app.active{display:flex;}
+.sidebar{
+  width:236px;flex-shrink:0;background:var(--blue-900);
+  display:flex;flex-direction:column;
+  padding:20px 14px;color:#fff;
+  position:sticky;top:0;height:100vh;
+}
+.sb-brand{display:flex;align-items:center;gap:10px;padding:6px 8px 22px;}
+.sb-brand .mark{width:34px;height:34px;border-radius:9px;background:rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.sb-brand .name{font-size:14.5px;font-weight:700;line-height:1.25;}
+.sb-brand .tag{font-size:9.5px;color:rgba(255,255,255,0.5);letter-spacing:1px;text-transform:uppercase;}
+.sb-nav{display:flex;flex-direction:column;gap:2px;flex:1;}
+.sb-link{
+  display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:9px;
+  color:rgba(255,255,255,0.68);font-size:13.5px;font-weight:500;
+  transition:background .15s,color .15s;
+}
+.sb-link svg{width:17px;height:17px;flex-shrink:0;}
+.sb-link:hover{background:rgba(255,255,255,0.06);color:#fff;}
+.sb-link.active{background:rgba(255,255,255,0.13);color:#fff;font-weight:600;}
+.sb-link .badge{
+  margin-left:auto;font-size:10px;font-weight:700;background:var(--teal-600);
+  padding:1.5px 6px;border-radius:20px;color:#fff;
+}
+.sb-foot{border-top:1px solid rgba(255,255,255,0.12);padding-top:14px;margin-top:10px;}
+.sb-user{display:flex;align-items:center;gap:10px;padding:6px 8px;border-radius:9px;}
+.sb-user:hover{background:rgba(255,255,255,0.06);cursor:pointer;}
+.sb-avatar{width:32px;height:32px;border-radius:50%;background:var(--teal-600);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;}
+.sb-user .un{font-size:12.5px;font-weight:600;}
+.sb-user .ur{font-size:10.5px;color:rgba(255,255,255,0.5);}
+
+.main-col{flex:1;min-width:0;display:flex;flex-direction:column;}
+.topbar{
+  height:64px;flex-shrink:0;background:var(--panel);border-bottom:1px solid var(--line);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 26px;position:sticky;top:0;z-index:5;
+}
+.tb-left{display:flex;align-items:center;gap:14px;}
+.tb-title{font-size:16px;font-weight:700;color:var(--ink-900);}
+.tb-search{
+  display:flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--line);
+  border-radius:9px;padding:8px 12px;width:320px;
+}
+.tb-search input{border:none;background:transparent;outline:none;font-size:13px;width:100%;font-family:inherit;color:var(--ink-900);}
+.tb-search svg{width:15px;height:15px;color:var(--ink-400);flex-shrink:0;}
+.tb-right{display:flex;align-items:center;gap:14px;}
+.icon-btn{
+  width:36px;height:36px;border-radius:9px;border:1px solid var(--line);background:#fff;
+  display:flex;align-items:center;justify-content:center;color:var(--ink-500);position:relative;
+}
+.icon-btn:hover{background:var(--bg);}
+.icon-btn svg{width:16px;height:16px;}
+.icon-btn .dot{position:absolute;top:7px;right:7px;width:7px;height:7px;border-radius:50%;background:var(--red-600);border:1.5px solid #fff;}
+.btn-teal{
+  background:var(--teal-600);color:#fff;border:none;border-radius:9px;padding:9px 16px;
+  font-size:13px;font-weight:600;display:flex;align-items:center;gap:7px;
+}
+.btn-teal:hover{background:var(--teal-700,#0a716c);}
+.btn-teal svg{width:15px;height:15px;}
+
+.content{padding:26px 30px 60px;max-width:1360px;}
+.view{display:none;}
+.view.active{display:block;}
+.page-head{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:14px;}
+.page-head h1{font-size:22px;font-weight:700;margin:0 0 4px;color:var(--ink-900);}
+.page-head p{margin:0;font-size:13px;color:var(--ink-500);}
+.crumb{font-size:11.5px;color:var(--ink-400);text-transform:uppercase;letter-spacing:.6px;font-weight:600;margin-bottom:6px;}
+
+/* KPI cards */
+.kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-bottom:26px;}
+.kpi-card{
+  background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-lg);
+  padding:18px 18px 16px;box-shadow:var(--shadow-card);
+  display:flex;flex-direction:column;gap:12px;
+}
+.kpi-top{display:flex;align-items:center;justify-content:space-between;}
+.kpi-ico{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;}
+.kpi-ico svg{width:17px;height:17px;}
+.kpi-trend{font-size:11px;font-weight:700;display:flex;align-items:center;gap:3px;}
+.kpi-num{font-size:26px;font-weight:700;color:var(--ink-900);line-height:1;}
+.kpi-label{font-size:12.5px;color:var(--ink-500);font-weight:500;}
+
+/* generic card */
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--shadow-card);}
+.card-head{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--line-soft);}
+.card-head h3{margin:0;font-size:15px;font-weight:700;color:var(--ink-900);}
+.card-head .sub{font-size:12px;color:var(--ink-500);margin-top:2px;}
+.link-btn{font-size:12.5px;font-weight:600;color:var(--blue-600);}
+
+table{width:100%;border-collapse:collapse;}
+thead th{
+  text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.6px;
+  color:var(--ink-400);font-weight:700;padding:11px 22px;border-bottom:1px solid var(--line);
+}
+tbody td{padding:13px 22px;font-size:13px;border-bottom:1px solid var(--line-soft);color:var(--ink-700);vertical-align:middle;}
+tbody tr:last-child td{border-bottom:none;}
+tbody tr:hover{background:#FAFBFD;}
+.doc-name{font-weight:600;color:var(--ink-900);}
+.doc-id{color:var(--ink-400);font-size:11.5px;}
+
+.chip{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:11.5px;font-weight:600;white-space:nowrap;}
+.chip .d{width:6px;height:6px;border-radius:50%;}
+.chip-draft{background:#EEF1F5;color:var(--ink-500);}
+.chip-draft .d{background:var(--ink-400);}
+.chip-aireview{background:var(--teal-100);color:var(--teal-600);}
+.chip-aireview .d{background:var(--teal-600);}
+.chip-qareview{background:var(--blue-100);color:var(--blue-600);}
+.chip-qareview .d{background:var(--blue-600);}
+.chip-approved{background:var(--green-100);color:var(--green-600);}
+.chip-approved .d{background:var(--green-600);}
+.chip-highrisk{background:var(--red-100);color:var(--red-600);}
+.chip-highrisk .d{background:var(--red-600);}
+.chip-medrisk{background:var(--amber-100);color:var(--amber-600);}
+.chip-medrisk .d{background:var(--amber-600);}
+.chip-lowrisk{background:var(--green-100);color:var(--green-600);}
+.chip-lowrisk .d{background:var(--green-600);}
+
+.row-actions{display:flex;gap:6px;}
+.mini-btn{
+  border:1px solid var(--line);background:#fff;border-radius:7px;padding:6px 10px;
+  font-size:11.5px;font-weight:600;color:var(--ink-700);display:flex;align-items:center;gap:5px;
+}
+.mini-btn:hover{background:var(--bg);}
+.mini-btn svg{width:12px;height:12px;}
+
+/* ===================== UPLOAD ===================== */
+.upload-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:20px;align-items:start;}
+.form-card{padding:24px 26px;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.dropzone{
+  border:1.6px dashed var(--line);border-radius:var(--radius-md);
+  padding:30px 20px;text-align:center;background:var(--bg);margin-top:6px;
+}
+.dropzone svg{width:30px;height:30px;color:var(--blue-500);margin-bottom:10px;}
+.dropzone .dz-title{font-size:13.5px;font-weight:600;color:var(--ink-900);}
+.dropzone .dz-sub{font-size:12px;color:var(--ink-500);margin-top:4px;}
+.dz-file{
+  margin-top:12px;display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);
+  border-radius:9px;padding:10px 12px;text-align:left;
+}
+.dz-file svg{width:18px;height:18px;color:var(--red-600);flex-shrink:0;}
+.dz-file .fn{font-size:12.5px;font-weight:600;color:var(--ink-900);}
+.dz-file .fs{font-size:11px;color:var(--ink-500);}
+.checklist-side{padding:22px;display:flex;flex-direction:column;gap:14px;}
+.cl-item{display:flex;gap:10px;align-items:flex-start;}
+.cl-ico{width:22px;height:22px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:1px;}
+.cl-ico svg{width:12px;height:12px;}
+.cl-t{font-size:12.5px;font-weight:600;color:var(--ink-900);}
+.cl-d{font-size:11.5px;color:var(--ink-500);margin-top:1px;}
+
+/* ===================== AI REVIEW ===================== */
+.ai-banner{
+  border-radius:var(--radius-lg);padding:20px 24px;display:flex;align-items:center;gap:16px;
+  background:linear-gradient(120deg,var(--blue-900),var(--blue-700));color:#fff;margin-bottom:20px;
+}
+.ai-banner .aico{width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,0.14);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ai-banner .aico svg{width:22px;height:22px;}
+.ai-banner h3{margin:0 0 3px;font-size:15.5px;font-weight:700;}
+.ai-banner p{margin:0;font-size:12.5px;color:rgba(255,255,255,0.72);}
+.ai-banner .pct{margin-left:auto;text-align:right;}
+.ai-banner .pct b{font-size:24px;font-weight:700;}
+.ai-banner .pct span{display:block;font-size:11px;color:rgba(255,255,255,0.65);}
+
+.review-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px;}
+.check-card{padding:18px 20px;}
+.check-top{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
+.check-top .ico{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.check-top .ico svg{width:15px;height:15px;}
+.check-top .tt{font-size:13px;font-weight:700;color:var(--ink-900);}
+.check-status{font-size:11.5px;font-weight:600;margin-left:auto;}
+.check-desc{font-size:12px;color:var(--ink-500);line-height:1.55;}
+
+.issue-list{padding:4px 0;}
+.issue-item{display:flex;gap:12px;padding:14px 22px;border-bottom:1px solid var(--line-soft);}
+.issue-item:last-child{border-bottom:none;}
+.issue-sev{width:26px;height:26px;border-radius:7px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.issue-sev svg{width:13px;height:13px;}
+.issue-tt{font-size:13px;font-weight:600;color:var(--ink-900);}
+.issue-dd{font-size:12px;color:var(--ink-500);margin-top:2px;line-height:1.5;}
+.issue-tag{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;padding:2px 8px;border-radius:6px;margin-left:auto;flex-shrink:0;height:fit-content;}
+
+.rec-list{padding:6px 22px 18px;display:flex;flex-direction:column;gap:10px;}
+.rec-item{display:flex;gap:10px;font-size:12.5px;color:var(--ink-700);line-height:1.55;align-items:flex-start;}
+.rec-item svg{width:15px;height:15px;color:var(--teal-600);flex-shrink:0;margin-top:2px;}
+
+.action-bar{display:flex;justify-content:flex-end;gap:10px;margin-top:22px;}
+.btn-ghost{background:#fff;border:1px solid var(--line);color:var(--ink-700);border-radius:9px;padding:11px 18px;font-size:13.5px;font-weight:600;display:flex;align-items:center;gap:7px;}
+.btn-ghost:hover{background:var(--bg);}
+.btn-blue{background:var(--blue-600);color:#fff;border:none;border-radius:9px;padding:11px 20px;font-size:13.5px;font-weight:600;display:flex;align-items:center;gap:7px;}
+.btn-blue:hover{background:var(--blue-700);}
+
+/* ===================== RISK ===================== */
+.risk-top{display:grid;grid-template-columns:340px 1fr;gap:20px;margin-bottom:20px;}
+.gauge-card{padding:26px 20px;display:flex;flex-direction:column;align-items:center;text-align:center;}
+.gauge-wrap{position:relative;width:220px;height:150px;}
+.gauge-num{position:absolute;bottom:6px;left:0;right:0;text-align:center;}
+.gauge-num b{font-size:38px;font-weight:700;color:var(--ink-900);}
+.gauge-num span{display:block;font-size:11px;color:var(--ink-500);font-weight:600;letter-spacing:.4px;}
+.risk-level-badge{margin-top:10px;padding:6px 16px;border-radius:20px;font-size:12.5px;font-weight:700;}
+.risk-meta{display:flex;gap:22px;margin-top:18px;width:100%;justify-content:center;}
+.risk-meta .rm{text-align:center;}
+.risk-meta .rm b{display:block;font-size:17px;font-weight:700;color:var(--ink-900);}
+.risk-meta .rm span{font-size:10.5px;color:var(--ink-500);text-transform:uppercase;letter-spacing:.4px;}
+
+.reason-row{display:flex;align-items:flex-start;gap:12px;padding:14px 22px;border-bottom:1px solid var(--line-soft);}
+.reason-row:last-child{border-bottom:none;}
+.reason-weight{width:40px;height:40px;border-radius:9px;background:var(--red-100);color:var(--red-600);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;}
+.reason-tt{font-size:13px;font-weight:600;color:var(--ink-900);}
+.reason-dd{font-size:12px;color:var(--ink-500);margin-top:2px;line-height:1.5;}
+
+.recact-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:20px 22px;}
+.recact{border:1px solid var(--line);border-radius:var(--radius-md);padding:14px 16px;display:flex;gap:12px;}
+.recact .n{width:24px;height:24px;border-radius:7px;background:var(--blue-100);color:var(--blue-600);font-size:11.5px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.recact .t{font-size:12.5px;font-weight:600;color:var(--ink-900);}
+.recact .d{font-size:11.5px;color:var(--ink-500);margin-top:3px;line-height:1.5;}
+
+/* ===================== VERSION COMPARE ===================== */
+.ver-head{display:flex;align-items:center;gap:14px;margin-bottom:20px;}
+.ver-pill{display:flex;align-items:center;gap:9px;background:#fff;border:1px solid var(--line);border-radius:20px;padding:8px 16px;font-size:12.5px;font-weight:600;}
+.ver-pill.old{color:var(--ink-500);}
+.ver-pill.new{color:var(--blue-600);border-color:var(--blue-500);background:var(--blue-100);}
+.ver-arrow{color:var(--ink-400);}
+.diffstat{display:flex;gap:22px;margin-left:auto;}
+.diffstat .ds{font-size:12px;font-weight:700;display:flex;align-items:center;gap:5px;}
+
+.diff-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px;}
+.diff-card .card-head{padding:14px 20px;}
+.diff-card .card-head h3{font-size:13px;display:flex;align-items:center;gap:7px;}
+.diff-card .card-head h3 .cnt{font-size:11px;padding:1px 7px;border-radius:20px;font-weight:700;}
+.diff-list-item{padding:11px 20px;border-bottom:1px solid var(--line-soft);font-size:12.5px;color:var(--ink-700);}
+.diff-list-item:last-child{border-bottom:none;}
+.diff-list-item b{display:block;color:var(--ink-900);font-size:12.5px;margin-bottom:2px;}
+
+.content-diff{padding:6px 0;}
+.diff-block{padding:14px 22px;border-bottom:1px solid var(--line-soft);}
+.diff-block:last-child{border-bottom:none;}
+.diff-block .sec-title{font-size:12px;font-weight:700;color:var(--ink-900);margin-bottom:8px;text-transform:uppercase;letter-spacing:.3px;}
+.diff-line{font-size:12.5px;padding:8px 12px;border-radius:7px;margin-bottom:6px;font-family:'IBM Plex Mono',monospace;line-height:1.6;}
+.diff-line.rm{background:var(--red-100);color:#8A2317;text-decoration:line-through;text-decoration-color:rgba(138,35,23,0.4);}
+.diff-line.add{background:var(--green-100);color:#155B39;}
+.diff-line.rm span, .diff-line.add span{opacity:.55;margin-right:6px;font-weight:700;}
+
+/* ===================== WORKFLOW ===================== */
+.wf-timeline{display:flex;flex-direction:column;padding:8px 0;}
+.wf-step{display:flex;gap:18px;padding:0 26px;position:relative;}
+.wf-step .wf-rail{display:flex;flex-direction:column;align-items:center;width:34px;flex-shrink:0;}
+.wf-dot{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;z-index:1;border:2px solid var(--panel);}
+.wf-dot svg{width:16px;height:16px;}
+.wf-line{width:2px;flex:1;background:var(--line);margin:2px 0;}
+.wf-step:last-child .wf-line{display:none;}
+.wf-body{flex:1;padding:14px 0 26px;}
+.wf-head-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.wf-title{font-size:14.5px;font-weight:700;color:var(--ink-900);}
+.wf-status-chip{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;}
+.wf-info{display:flex;gap:26px;margin-top:8px;flex-wrap:wrap;}
+.wf-info .wi{font-size:12px;color:var(--ink-500);display:flex;align-items:center;gap:6px;}
+.wf-info .wi svg{width:13px;height:13px;color:var(--ink-400);}
+.wf-info .wi b{color:var(--ink-700);font-weight:600;}
+.wf-note{margin-top:8px;font-size:12px;color:var(--ink-500);background:var(--bg);border-radius:8px;padding:9px 12px;line-height:1.5;}
+.wf-current-card{
+  margin-top:12px;padding:16px 18px;border:1px solid var(--blue-500);background:var(--blue-100);border-radius:var(--radius-md);
+}
+.wf-current-card .cc-title{font-size:12.5px;font-weight:700;color:var(--blue-700);margin-bottom:4px;}
+.wf-current-card .cc-desc{font-size:12px;color:var(--ink-700);line-height:1.55;margin-bottom:12px;}
+.wf-actions{display:flex;gap:10px;}
+.btn-approve{background:var(--green-600);color:#fff;border:none;border-radius:8px;padding:9px 16px;font-size:12.5px;font-weight:700;display:flex;align-items:center;gap:6px;}
+.btn-reject{background:#fff;color:var(--red-600);border:1px solid var(--red-600);border-radius:8px;padding:9px 16px;font-size:12.5px;font-weight:700;display:flex;align-items:center;gap:6px;}
+.btn-modify{background:#fff;color:var(--amber-600);border:1px solid var(--amber-600);border-radius:8px;padding:9px 16px;font-size:12.5px;font-weight:700;display:flex;align-items:center;gap:6px;}
+.btn-approve:hover{background:#146e46;}
+.btn-reject:hover{background:var(--red-100);}
+.btn-modify:hover{background:var(--amber-100);}
+
+/* toast */
+#toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--ink-900);color:#fff;padding:12px 20px;border-radius:10px;font-size:13px;font-weight:500;
+  box-shadow:var(--shadow-pop);display:flex;align-items:center;gap:10px;opacity:0;pointer-events:none;
+  transition:all .25s ease;z-index:999;
+}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+#toast svg{width:16px;height:16px;color:#5EEAD4;flex-shrink:0;}
+
+@media(max-width:1150px){
+  .kpi-grid{grid-template-columns:repeat(3,1fr);}
+  .review-grid{grid-template-columns:repeat(2,1fr);}
+  .diff-grid{grid-template-columns:1fr;}
+  .risk-top{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================ LOGIN SCREEN ============================================================ -->
+<div id="screen-login" class="screen active">
+  <div class="login-visual">
+    <div class="login-brand">
+      <div class="mark">
+        <svg viewBox="0 0 24 24" fill="none" width="22" height="22"><path d="M12 2L4 5v6c0 5 3.4 8.7 8 10 4.6-1.3 8-5 8-10V5l-8-3z" stroke="#fff" stroke-width="1.6"/><path d="M9 12l2 2 4-4" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div>
+        <div class="name">Veritas QMS</div>
+        <div class="tag">Quality Assurance Platform</div>
+      </div>
+    </div>
+
+    <div class="login-hero">
+      <div class="eyebrow"><span class="dot"></span> AI-Powered Document Intelligence</div>
+      <h1>Electronic Document Management System for Quality Assurance</h1>
+      <p>Automated completeness checks, GxP compliance validation, and risk scoring for SOPs, batch records, and protocols — reviewed by AI, approved by QA.</p>
+    </div>
+
+    <div>
+      <div class="login-stats">
+        <div class="stat"><b>12,480</b><span>Controlled documents</span></div>
+        <div class="stat"><b>99.6%</b><span>Audit readiness</span></div>
+        <div class="stat"><b>3.2 min</b><span>Avg. AI review time</span></div>
+      </div>
+      <div class="login-foot" style="margin-top:34px;">© 2026 Veritas QMS · 21 CFR Part 11 &amp; EU Annex 11 compliant · v4.2.1</div>
+    </div>
+  </div>
+
+  <div class="login-form-wrap">
+    <div class="login-form">
+      <div class="lf-head">
+        <div class="kicker">Sign in to your workspace</div>
+        <h2>Welcome back</h2>
+      </div>
+
+      <div class="field">
+        <label for="li-user">Username</label>
+        <input type="text" id="li-user" placeholder="e.g. j.martinez" value="j.martinez">
+      </div>
+      <div class="field">
+        <label for="li-pass">Password</label>
+        <input type="password" id="li-pass" placeholder="••••••••••" value="••••••••••">
+      </div>
+
+      <div class="field">
+        <label>Login as</label>
+        <div class="role-select">
+          <div class="role-opt selected" id="role-qa" onclick="selectRole('qa')">
+            <span class="rt">QA Reviewer</span>
+            <span class="rd">Review &amp; approve documents</span>
+          </div>
+          <div class="role-opt" id="role-owner" onclick="selectRole('owner')">
+            <span class="rt">Document Owner</span>
+            <span class="rd">Author &amp; submit documents</span>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-primary" onclick="doLogin()">
+        <svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M10 17l5-5-5-5M15 12H3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Log In
+      </button>
+      <div class="login-alt">Forgot your password? <a href="#">Reset it here</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ APP SHELL ============================================================ -->
+<div id="screen-app" class="screen">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sb-brand">
+      <div class="mark">
+        <svg viewBox="0 0 24 24" fill="none" width="18" height="18"><path d="M12 2L4 5v6c0 5 3.4 8.7 8 10 4.6-1.3 8-5 8-10V5l-8-3z" stroke="#fff" stroke-width="1.6"/><path d="M9 12l2 2 4-4" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div>
+        <div class="name">Veritas QMS</div>
+        <div class="tag">eDMS · Quality</div>
+      </div>
+    </div>
+
+    <div class="sb-nav">
+      <a class="sb-link active" data-view="dashboard" onclick="showView('dashboard',this)">
+        <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="9" rx="1.5" stroke="currentColor" stroke-width="1.7"/><rect x="14" y="3" width="7" height="5" rx="1.5" stroke="currentColor" stroke-width="1.7"/><rect x="14" y="12" width="7" height="9" rx="1.5" stroke="currentColor" stroke-width="1.7"/><rect x="3" y="16" width="7" height="5" rx="1.5" stroke="currentColor" stroke-width="1.7"/></svg>
+        Dashboard
+      </a>
+      <a class="sb-link" data-view="documents" onclick="showView('documents',this)">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M14 2H7a2 2 0 00-2 2v16a2 2 0 002 2h10a2 2 0 002-2V8l-5-6z" stroke="currentColor" stroke-width="1.7"/><path d="M14 2v6h5M9 13h6M9 17h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+        Documents
+      </a>
+      <a class="sb-link" data-view="aireview" onclick="showView('aireview',this)">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 2l1.8 4.3L18 8l-4.2 1.7L12 14l-1.8-4.3L6 8l4.2-1.7L12 2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M19 14l.9 2.1L22 17l-2.1.9L19 20l-.9-2.1L16 17l2.1-.9L19 14z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+        AI Review
+        <span class="badge">6</span>
+      </a>
+      <a class="sb-link" data-view="risk" onclick="showView('risk',this)">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L2 20h20L12 2z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M12 9v5M12 17h.01" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+        Risk Assessment
+      </a>
+      <a class="sb-link" data-view="version" onclick="showView('version',this)">
+        <svg viewBox="0 0 24 24" fill="none"><circle cx="6" cy="6" r="2.4" stroke="currentColor" stroke-width="1.6"/><circle cx="6" cy="18" r="2.4" stroke="currentColor" stroke-width="1.6"/><circle cx="18" cy="12" r="2.4" stroke="currentColor" stroke-width="1.6"/><path d="M6 8.4V15.6M8 6.6l7.2 4.2M8 17.4l7.2-4.2" stroke="currentColor" stroke-width="1.6"/></svg>
+        Version Control
+      </a>
+      <a class="sb-link" data-view="workflow" onclick="showView('workflow',this)">
+        <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="6" height="6" rx="1.3" stroke="currentColor" stroke-width="1.6"/><rect x="15" y="4" width="6" height="6" rx="1.3" stroke="currentColor" stroke-width="1.6"/><rect x="9" y="14" width="6" height="6" rx="1.3" stroke="currentColor" stroke-width="1.6"/><path d="M6 10v2a2 2 0 002 2h1M18 10v2a2 2 0 01-2 2h-1" stroke="currentColor" stroke-width="1.6"/></svg>
+        Workflow
+      </a>
+      <a class="sb-link" data-view="reports" onclick="showView('reports',this)">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M4 19h16M7 19V9m5 10V5m5 14v-7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+        Reports
+      </a>
+    </div>
+
+    <div class="sb-foot">
+      <div class="sb-user" onclick="logout()">
+        <div class="sb-avatar" id="sb-avatar">JM</div>
+        <div>
+          <div class="un" id="sb-username">J. Martinez</div>
+          <div class="ur" id="sb-role">QA Reviewer</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN COLUMN -->
+  <div class="main-col">
+    <div class="topbar">
+      <div class="tb-left">
+        <div class="tb-title" id="tb-title">Dashboard</div>
+      </div>
+      <div class="tb-right">
+        <div class="tb-search">
+          <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8"/><path d="M21 21l-4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <input type="text" placeholder="Search documents, SOPs, batch records…">
+        </div>
+        <div class="icon-btn"><span class="dot"></span>
+          <svg viewBox="0 0 24 24" fill="none"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.7 21a2 2 0 01-3.4 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+        </div>
+        <button class="btn-teal" onclick="showView('upload',null,true)">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 4v12m0-12l-4 4m4-4l4 4M4 18v1a2 2 0 002 2h12a2 2 0 002-2v-1" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Upload New Document
+        </button>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ============= DASHBOARD ============= -->
+      <div class="view active" id="view-dashboard">
+        <div class="page-head">
+          <div>
+            <h1>Good afternoon, Julia</h1>
+            <p>Here's what's happening across the document lifecycle today, Aug 6 2026.</p>
+          </div>
+        </div>
+
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-top">
+              <div class="kpi-ico" style="background:var(--blue-100);"><svg viewBox="0 0 24 24" fill="none" stroke="var(--blue-600)"><path d="M14 2H7a2 2 0 00-2 2v16a2 2 0 002 2h10a2 2 0 002-2V8l-5-6z" stroke-width="1.7"/><path d="M14 2v6h5" stroke-width="1.7"/></svg></div>
+              <span class="kpi-trend" style="color:var(--green-600);">▲ 4.2%</span>
+            </div>
+            <div><div class="kpi-num">12,480</div><div class="kpi-label">Total Documents</div></div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-top">
+              <div class="kpi-ico" style="background:var(--teal-100);"><svg viewBox="0 0 24 24" fill="none" stroke="var(--teal-600)"><path d="M12 2l1.8 4.3L18 8l-4.2 1.7L12 14l-1.8-4.3L6 8l4.2-1.7L12 2z" stroke-width="1.5"/></svg></div>
+              <span class="kpi-trend" style="color:var(--ink-500);">Live</span>
+            </div>
+            <div><div class="kpi-num">146</div><div class="kpi-label">Under AI Review</div></div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-top">
+              <div class="kpi-ico" style="background:var(--amber-100);"><svg viewBox="0 0 24 24" fill="none" stroke="var(--amber-600)"><circle cx="12" cy="12" r="9" stroke-width="1.7"/><path d="M12 7v5l3 2" stroke-width="1.7" stroke-linecap="round"/></svg></div>
+              <span class="kpi-trend" style="color:var(--amber-600);">▲ 12</span>
+            </div>
+            <div><div class="kpi-num">58</div><div class="kpi-label">Pending QA Approval</div></div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-top">
+              <div class="kpi-ico" style="background:var(--green-100);"><svg viewBox="0 0 24 24" fill="none" stroke="var(--green-600)"><path d="M20 6L9 17l-5-5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="kpi-trend" style="color:var(--green-600);">▲ 2.8%</span>
+            </div>
+            <div><div class="kpi-num">11,842</div><div class="kpi-label">Approved Documents</div></div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-top">
+              <div class="kpi-ico" style="background:var(--red-100);"><svg viewBox="0 0 24 24" fill="none" stroke="var(--red-600)"><path d="M12 2L2 20h20L12 2z" stroke-width="1.7" stroke-linejoin="round"/><path d="M12 9v5M12 17h.01" stroke-width="1.7" stroke-linecap="round"/></svg></div>
+              <span class="kpi-trend" style="color:var(--red-600);">▲ 3</span>
+            </div>
+            <div><div class="kpi-num">14</div><div class="kpi-label">High-Risk Documents</div></div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:20px;">
+          <div class="card-head">
+            <div>
+              <h3>Recent Documents</h3>
+              <div class="sub">Latest activity across all departments</div>
+            </div>
+            <a class="link-btn" onclick="showView('documents',null,true)">View all documents →</a>
+          </div>
+          <table>
+            <thead><tr><th>Document</th><th>Department</th><th>Version</th><th>Status</th><th>Risk</th><th>Updated</th><th></th></tr></thead>
+            <tbody id="recent-docs-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ============= DOCUMENTS ============= -->
+      <div class="view" id="view-documents">
+        <div class="page-head">
+          <div><div class="crumb">Library</div><h1>Documents</h1><p>All controlled documents across the quality system.</p></div>
+          <div style="display:flex;gap:10px;">
+            <button class="btn-ghost">
+              <svg viewBox="0 0 24 24" fill="none" width="15" height="15"><path d="M3 6h18M6 12h12M10 18h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              Filter
+            </button>
+            <button class="btn-teal" onclick="showView('upload',null,true)">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M12 4v12m0-12l-4 4m4-4l4 4M4 18v1a2 2 0 002 2h12a2 2 0 002-2v-1" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Upload New Document
+            </button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h3>All Documents</h3>
+              <div class="sub">12,480 records · sorted by last modified</div>
+            </div>
+            <div class="tb-search" style="width:260px;">
+              <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8"/><path d="M21 21l-4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              <input type="text" placeholder="Search this list…">
+            </div>
+          </div>
+          <table>
+            <thead><tr><th>Document</th><th>Type</th><th>Department</th><th>Version</th><th>Status</th><th>Risk</th><th>Updated</th><th></th></tr></thead>
+            <tbody id="all-docs-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ============= UPLOAD ============= -->
+      <div class="view" id="view-upload">
+        <div class="page-head">
+          <div><div class="crumb">Documents / New</div><h1>Upload Document</h1><p>Submit a new document for AI-assisted quality review.</p></div>
+        </div>
+        <div class="upload-grid">
+          <div class="card form-card">
+            <div class="field">
+              <label>Document Name</label>
+              <input type="text" placeholder="e.g. Cleaning Validation Protocol — Line 4" value="Aseptic Filling SOP — Suite B">
+            </div>
+            <div class="form-row">
+              <div class="field">
+                <label>Document Type</label>
+                <select>
+                  <option>Standard Operating Procedure (SOP)</option>
+                  <option>Batch Record</option>
+                  <option>Protocol</option>
+                  <option>Form</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Department</label>
+                <select>
+                  <option>Quality Assurance</option>
+                  <option>Manufacturing</option>
+                  <option>Quality Control</option>
+                  <option>Regulatory Affairs</option>
+                  <option>Validation</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="field">
+                <label>Version Number</label>
+                <input type="text" value="2.0" class="mono">
+              </div>
+              <div class="field">
+                <label>Effective Date</label>
+                <input type="text" value="2026-09-01" placeholder="YYYY-MM-DD">
+              </div>
+            </div>
+            <div class="field">
+              <label>Upload File</label>
+              <div class="dropzone">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M12 3v13m0-13l-5 5m5-5l5 5M5 21h14" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <div class="dz-title">Drag &amp; drop your file here, or browse</div>
+                <div class="dz-sub">Supports PDF, DOCX up to 25MB</div>
+                <div class="dz-file">
+                  <svg viewBox="0 0 24 24" fill="none"><path d="M14 2H7a2 2 0 00-2 2v16a2 2 0 002 2h10a2 2 0 002-2V8l-5-6z" stroke-width="1.6"/><path d="M14 2v6h5" stroke-width="1.6"/></svg>
+                  <div>
+                    <div class="fn">Aseptic_Filling_SOP_v2.0.docx</div>
+                    <div class="fs">1.4 MB · uploaded just now</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button class="btn-blue" style="margin-top:8px;" onclick="showView('aireview',null,true); startAIReview();">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M12 2l1.8 4.3L18 8l-4.2 1.7L12 14l-1.8-4.3L6 8l4.2-1.7L12 2z" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/></svg>
+              Start AI Review
+            </button>
+          </div>
+
+          <div class="card checklist-side">
+            <h3 style="margin:0 0 4px;font-size:14px;">Before you submit</h3>
+            <div class="cl-item">
+              <div class="cl-ico" style="background:var(--green-100);color:var(--green-600);"><svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div><div class="cl-t">Use the current template</div><div class="cl-d">Header, footer &amp; version block must match the master template.</div></div>
+            </div>
+            <div class="cl-item">
+              <div class="cl-ico" style="background:var(--green-100);color:var(--green-600);"><svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div><div class="cl-t">Include all required signatures</div><div class="cl-d">Author, reviewer, and approver blocks should be present.</div></div>
+            </div>
+            <div class="cl-item">
+              <div class="cl-ico" style="background:var(--amber-100);color:var(--amber-600);"><svg viewBox="0 0 24 24" fill="none"><path d="M12 9v4m0 4h.01M10.3 3.9L2.5 17a2 2 0 001.7 3h15.6a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></div>
+              <div><div class="cl-t">Cross-check references</div><div class="cl-d">Linked SOPs and forms must cite current, effective versions.</div></div>
+            </div>
+            <div class="cl-item">
+              <div class="cl-ico" style="background:var(--blue-100);color:var(--blue-600);"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2l1.8 4.3L18 8l-4.2 1.7L12 14l-1.8-4.3L6 8l4.2-1.7L12 2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+              <div><div class="cl-t">AI will scan on submit</div><div class="cl-d">Completeness, formatting &amp; compliance checks run automatically, ~3 min.</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============= AI REVIEW ============= -->
+      <div class="view" id="view-aireview">
+        <div class="page-head">
+          <div><div class="crumb">Documents / AI Review</div><h1>AI Document Review</h1><p>Aseptic Filling SOP — Suite B &nbsp;·&nbsp; <span class="mono">DOC-2026-04471</span> &nbsp;·&nbsp; v2.0</p></div>
+        </div>
+
+        <div class="ai-banner" id="ai-banner">
+          <div class="aico"><svg viewBox="0 0 24 24" fill="none" stroke="#fff"><path d="M12 2l1.8 4.3L18 8l-4.2 1.7L12 14l-1.8-4.3L6 8l4.2-1.7L12 2z" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+          <div>
+            <h3 id="ai-banner-title">Analyzing document…</h3>
+            <p id="ai-banner-sub">Running completeness, formatting &amp; compliance checks against SOP-TPL-014</p>
+          </div>
+          <div class="pct"><b id="ai-banner-pct">0%</b><span>Scan progress</span></div>
+        </div>
+
+        <div class="review-grid">
+          <div class="card check-card">
+            <div class="check-top">
+              <div class="ico" style="background:var(--amber-100);color:var(--amber-600);"><svg viewBox="0 0 24 24" fill="none"><path d="M9 11l3 3L22 4M2 12a10 10 0 1018 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="tt">Completeness Check</div>
+              <span class="check-status" style="color:var(--amber-600);">84%</span>
+            </div>
+            <div class="check-desc">2 of 14 required sections are missing content. All revision history entries are present.</div>
+          </div>
+          <div class="card check-card">
+            <div class="check-top">
+              <div class="ico" style="background:var(--green-100);color:var(--green-600);"><svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="tt">Formatting Validation</div>
+              <span class="check-status" style="color:var(--green-600);">Passed</span>
+            </div>
+            <div class="check-desc">Fonts, headers, footers, pagination and version block match template SOP-TPL-014 v6.</div>
+          </div>
+          <div class="card check-card">
+            <div class="check-top">
+              <div class="ico" style="background:var(--red-100);color:var(--red-600);"><svg viewBox="0 0 24 24" fill="none"><path d="M12 9v4m0 4h.01M10.3 3.9L2.5 17a2 2 0 001.7 3h15.6a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></div>
+              <div class="tt">Compliance Check</div>
+              <span class="check-status" style="color:var(--red-600);">3 issues</span>
+            </div>
+            <div class="check-desc">Flags against 21 CFR 211 &amp; internal GMP policy QA-POL-002. Signature blocks incomplete.</div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:20px;">
+          <div class="card-head"><div><h3>Findings</h3><div class="sub">6 issues detected · ranked by severity</div></div></div>
+          <div class="issue-list">
+            <div class="issue-item">
+              <div class="issue-sev" style="background:var(--red-100);color:var(--red-600);"><svg viewBox="0 0 24 24" fill="none"><path d="M12 9v4m0 4h.01M10.3 3.9L2.5 17a2 2 0 001.7 3h15.6a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></div>
+              <div style="flex:1;">
+                <div class="issue-tt">Missing Required Section — "Deviation Handling"</div>
+                <div class="issue-dd">Section 8 (Deviation Handling) required by template SOP-TPL-014 is absent from the submitted document.</div>
+              </div>
+              <span class="issue-tag" style="background:var(--red-100);color:var(--red-600);">Critical</span>
+            </div>
+            <div class="issue-item">
+              <div class="issue-sev" style="background:var(--red-100);color:var(--red-600);"><svg viewBox="0 0 24 24" fill="none"><path d="M12 9v4m0 4h.01M10.3 3.9L2.5 17a2 2 0 001.7 3h15.6a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></div>
+              <div style="flex:1;">
+                <div class="issue-tt">Missing Signature — QA Manager Approval Block</div>
+                <div class="issue-dd">Page 12 signature block for QA Manager approval is unsigned and undated.</div>
+              </div>
+              <span class="issue-tag" style="background:var(--red-100);color:var(--red-600);">Critical</span>
+            </div>
+            <div class="issue-item">
+              <div class="issue-sev" style="background:var(--amber-100);color:var(--amber-600);"><svg viewBox="0 0 24 24" fill="none"><path d="M12 8v5m0 4h.01" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/></svg></div>
+              <div style="flex:1;">
+                <div class="issue-tt">Incorrect Reference — SOP-118 cited as v3.0</div>
+                <div class="issue-dd">Section 4.2 references SOP-118 "Environmental Monitoring" v3.0, but the current effective version is v4.1.</div>
+              </div>
+              <span class="issue-tag" style="background:var(--amber-100);color:var(--amber-600);">Major</span>
+            </div>
+            <div class="issue-item">
+              <div class="issue-sev" style="background:var(--amber-100);color:var(--amber-600);"><svg viewBox="0 0 24 24" fill="none"><path d="M12 8v5m0 4h.01" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/></svg></div>
+              <div style="flex:1;">
+                <div class="issue-tt">Missing Required Section — "Training Requirements"</div>
+                <div class="issue-dd">Section 11 outlining operator training requirements is present but contains only a placeholder heading.</div>
+              </div>
+              <span class="issue-tag" style="background:var(--amber-100);color:var(--amber-600);">Major</span>
+            </div>
+            <div class="issue-item">
+              <div class="issue-sev" style="background:var(--blue-100);color:var(--blue-600);"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 16v-4m0-4h.01" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg></div>
+              <div style="flex:1;">
+                <div class="issue-tt">Incorrect Reference — Form QA-F-221 renamed</div>
+                <div class="issue-dd">Referenced form QA-F-221 was superseded by QA-F-221A on 2026-05-14.</div>
+              </div>
+              <span class="issue-tag" style="background:var(--blue-100);color:var(--blue-600);">Minor</span>
+            </div>
+            <div class="issue-item">
+              <div class="issue-sev" style="background:var(--blue-100);color:var(--blue-600);"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 16v-4m0-4h.01" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg></div>
+              <div style="flex:1;">
+                <div class="issue-tt">Missing Signature — Author revision initials, p.4</div>
+                <div class="issue-dd">Inline revision on page 4 is missing author initials next to the tracked change.</div>
+              </div>
+              <span class="issue-tag" style="background:var(--blue-100);color:var(--blue-600);">Minor</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:6px;">
+          <div class="card-head"><div><h3>AI Recommendations</h3><div class="sub">Suggested actions to resolve findings before QA review</div></div></div>
+          <div class="rec-list">
+            <div class="rec-item"><svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Add the missing "Deviation Handling" section using the standard language from SOP-TPL-014 §8.</div>
+            <div class="rec-item"><svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Route to the QA Manager for the outstanding approval signature before submission.</div>
+            <div class="rec-item"><svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Update the SOP-118 citation in §4.2 to reference the current effective version, v4.1.</div>
+            <div class="rec-item"><svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Replace the "Training Requirements" placeholder with department-specific training criteria.</div>
+            <div class="rec-item"><svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Re-point form reference from QA-F-221 to its superseding version, QA-F-221A.</div>
+          </div>
+        </div>
+
+        <div class="action-bar">
+          <button class="btn-ghost" onclick="showView('upload',null,true)">
+            <svg viewBox="0 0 24 24" fill="none" width="15" height="15"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4L16.5 3.5z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Edit Document
+          </button>
+          <button class="btn-blue" onclick="showView('risk',null,true)">
+            Continue to Risk Assessment
+            <svg viewBox="0 0 24 24" fill="none" width="15" height="15"><path d="M5 12h14m-6-6l6 6-6 6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ============= RISK ============= -->
+      <div class="view" id="view-risk">
+        <div class="page-head">
+          <div><div class="crumb">Documents / Risk Assessment</div><h1>AI Risk Assessment</h1><p>Aseptic Filling SOP — Suite B &nbsp;·&nbsp; <span class="mono">DOC-2026-04471</span> &nbsp;·&nbsp; v2.0</p></div>
+        </div>
+
+        <div class="risk-top">
+          <div class="card gauge-card">
+            <svg width="220" height="150" viewBox="0 0 220 150" class="gauge-wrap" style="position:static;">
+              <path d="M15 130 A95 95 0 0 1 205 130" fill="none" stroke="#EDF1F5" stroke-width="16" stroke-linecap="round"/>
+              <path d="M15 130 A95 95 0 0 1 205 130" fill="none" stroke="url(#gaugeGrad)" stroke-width="16" stroke-linecap="round"
+                stroke-dasharray="298" stroke-dashoffset="83" />
+              <defs>
+                <linearGradient id="gaugeGrad" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stop-color="#1B8A57"/>
+                  <stop offset="55%" stop-color="#B4740E"/>
+                  <stop offset="100%" stop-color="#C4341F"/>
+                </linearGradient>
+              </defs>
+            </svg>
+            <div style="margin-top:-64px;text-align:center;">
+              <b style="font-size:38px;font-weight:700;color:var(--ink-900);">72</b>
+              <span style="display:block;font-size:11px;color:var(--ink-500);font-weight:600;letter-spacing:.4px;">RISK SCORE / 100</span>
+            </div>
+            <div class="risk-level-badge" style="background:var(--amber-100);color:var(--amber-600);">MEDIUM–HIGH RISK</div>
+            <div class="risk-meta">
+              <div class="rm"><b>58</b><span>Compliance Score</span></div>
+              <div class="rm"><b>5</b><span>Risk Factors</span></div>
+              <div class="rm"><b>GMP</b><span>Framework</span></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><div><h3>Reasons for Risk</h3><div class="sub">Contributing factors identified by the AI model, weighted by impact</div></div></div>
+            <div>
+              <div class="reason-row">
+                <div class="reason-weight">32%</div>
+                <div><div class="reason-tt">Missing QA Manager approval signature</div><div class="reason-dd">Unsigned approval is a hard blocker for release and a common audit finding.</div></div>
+              </div>
+              <div class="reason-row">
+                <div class="reason-weight">24%</div>
+                <div><div class="reason-tt">Absent "Deviation Handling" section</div><div class="reason-dd">Required by internal policy QA-POL-002 for all aseptic-area SOPs.</div></div>
+              </div>
+              <div class="reason-row">
+                <div class="reason-weight">18%</div>
+                <div><div class="reason-tt">Reference to a superseded SOP version</div><div class="reason-dd">SOP-118 cited at v3.0; current effective version is v4.1.</div></div>
+              </div>
+              <div class="reason-row">
+                <div class="reason-weight">14%</div>
+                <div><div class="reason-tt">Incomplete training criteria</div><div class="reason-dd">Undefined training requirements increase risk of inconsistent execution on the floor.</div></div>
+              </div>
+              <div class="reason-row">
+                <div class="reason-weight">12%</div>
+                <div><div class="reason-tt">Document governs an aseptic critical process</div><div class="reason-dd">Base risk weighting is elevated for Grade A/B aseptic filling procedures.</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:20px;">
+          <div class="card-head"><div><h3>Recommended Actions</h3><div class="sub">Prioritized steps to reduce risk score before release</div></div></div>
+          <div class="recact-grid">
+            <div class="recact"><div class="n">1</div><div><div class="t">Escalate for QA Manager signature</div><div class="d">Route directly to the approval queue — this alone will reduce the score by ~30 points.</div></div></div>
+            <div class="recact"><div class="n">2</div><div><div class="t">Insert Deviation Handling section</div><div class="d">Use approved boilerplate from SOP-TPL-014 §8, then re-run AI review.</div></div></div>
+            <div class="recact"><div class="n">3</div><div><div class="t">Correct SOP-118 version reference</div><div class="d">Update citation to v4.1 across §4.2 and the reference table.</div></div></div>
+            <div class="recact"><div class="n">4</div><div><div class="t">Schedule a targeted re-scan</div><div class="d">After edits, re-run AI Review to confirm the risk score before QA submission.</div></div></div>
+          </div>
+        </div>
+
+        <div class="action-bar">
+          <button class="btn-ghost" onclick="showView('aireview',null,true)">
+            <svg viewBox="0 0 24 24" fill="none" width="15" height="15"><path d="M19 12H5m6-7l-7 7 7 7" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Back to AI Review
+          </button>
+          <button class="btn-blue" onclick="showView('version',null,true)">
+            Compare Versions
+            <svg viewBox="0 0 24 24" fill="none" width="15" height="15"><path d="M5 12h14m-6-6l6 6-6 6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ============= VERSION ============= -->
+      <div class="view" id="view-version">
+        <div class="page-head">
+          <div><div class="crumb">Documents / Version Control</div><h1>Version Comparison</h1><p>Aseptic Filling SOP — Suite B &nbsp;·&nbsp; <span class="mono">DOC-2026-04471</span></p></div>
+        </div>
+
+        <div class="ver-head">
+          <div class="ver-pill old">
+            <svg viewBox="0 0 24 24" fill="none" width="14" height="14"><path d="M14 2H7a2 2 0 00-2 2v16a2 2 0 002 2h10a2 2 0 002-2V8l-5-6z" stroke="currentColor" stroke-width="1.6"/></svg>
+            Version 1.0 · Effective 2025-02-10
+          </div>
+          <span class="ver-arrow">
+            <svg viewBox="0 0 24 24" fill="none" width="18" height="18"><path d="M5 12h14m-6-6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <div class="ver-pill new">
+            <svg viewBox="0 0 24 24" fill="none" width="14" height="14"><path d="M14 2H7a2 2 0 00-2 2v16a2 2 0 002 2h10a2 2 0 002-2V8l-5-6z" stroke="currentColor" stroke-width="1.6"/></svg>
+            Version 2.0 · Draft, pending effective date
+          </div>
+          <div class="diffstat">
+            <span class="ds" style="color:var(--green-600);">+3 added</span>
+            <span class="ds" style="color:var(--red-600);">−1 removed</span>
+            <span class="ds" style="color:var(--amber-600);">4 modified</span>
+          </div>
+        </div>
+
+        <div class="diff-grid">
+          <div class="card diff-card">
+            <div class="card-head"><h3><span style="color:var(--green-600);">●</span> Added Sections <span class="cnt" style="background:var(--green-100);color:var(--green-600);">3</span></h3></div>
+            <div class="diff-list-item"><b>§8 Deviation Handling</b>Full procedure for documenting and escalating in-process deviations.</div>
+            <div class="diff-list-item"><b>§11 Training Requirements</b>Role-specific gowning &amp; aseptic technique training criteria.</div>
+            <div class="diff-list-item"><b>§14.3 Environmental Excursion Response</b>Immediate actions when EM alert/action limits are exceeded.</div>
+          </div>
+          <div class="card diff-card">
+            <div class="card-head"><h3><span style="color:var(--red-600);">●</span> Removed Sections <span class="cnt" style="background:var(--red-100);color:var(--red-600);">1</span></h3></div>
+            <div class="diff-list-item"><b>§9 Legacy Line Changeover (Manual)</b>Removed — superseded by automated changeover, ref. VAL-2288.</div>
+          </div>
+          <div class="card diff-card">
+            <div class="card-head"><h3><span style="color:var(--amber-600);">●</span> Modified Content <span class="cnt" style="background:var(--amber-100);color:var(--amber-600);">4</span></h3></div>
+            <div class="diff-list-item"><b>§4.2 Reference Table</b>SOP-118 citation updated v3.0 → v4.1.</div>
+            <div class="diff-list-item"><b>§6.1 Gowning Sequence</b>Added double-glove step per CAPA-1187.</div>
+            <div class="diff-list-item"><b>§7.4 Fill Weight Checks</b>Frequency changed from hourly to every 30 min.</div>
+            <div class="diff-list-item"><b>Header / Version Block</b>Version, effective date and owner updated.</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><div><h3>Content Diff — Section 4.2 Reference Table</h3><div class="sub">Line-level changes between v1.0 and v2.0</div></div></div>
+          <div class="content-diff">
+            <div class="diff-block">
+              <div class="sec-title">§4.2 — Referenced Documents</div>
+              <div class="diff-line rm"><span>−</span>4.2.1 Environmental Monitoring is governed by SOP-118 "Environmental Monitoring," current version 3.0.</div>
+              <div class="diff-line add"><span>+</span>4.2.1 Environmental Monitoring is governed by SOP-118 "Environmental Monitoring," current version 4.1.</div>
+              <div class="diff-line rm"><span>−</span>4.2.4 Refer to Form QA-F-221 for excursion logging.</div>
+              <div class="diff-line add"><span>+</span>4.2.4 Refer to Form QA-F-221A for excursion logging.</div>
+            </div>
+            <div class="diff-block">
+              <div class="sec-title">§6.1 — Gowning Sequence</div>
+              <div class="diff-line add"><span>+</span>6.1.6 Apply a second pair of sterile gloves over the primary pair prior to Grade A entry (per CAPA-1187).</div>
+            </div>
+            <div class="diff-block">
+              <div class="sec-title">§7.4 — In-Process Fill Weight Checks</div>
+              <div class="diff-line rm"><span>−</span>7.4.2 Record fill weight of 5 units at the start of every hour of the run.</div>
+              <div class="diff-line add"><span>+</span>7.4.2 Record fill weight of 5 units every 30 minutes throughout the run.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="action-bar">
+          <button class="btn-ghost" onclick="showView('risk',null,true)">
+            <svg viewBox="0 0 24 24" fill="none" width="15" height="15"><path d="M19 12H5m6-7l-7 7 7 7" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Back to Risk Assessment
+          </button>
+          <button class="btn-blue" onclick="showView('workflow',null,true)">
+            Send to Approval Workflow
+            <svg viewBox="0 0 24 24" fill="none" width="15" height="15"><path d="M5 12h14m-6-6l6 6-6 6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ============= WORKFLOW ============= -->
+      <div class="view" id="view-workflow">
+        <div class="page-head">
+          <div><div class="crumb">Documents / Workflow</div><h1>Approval Workflow</h1><p>Aseptic Filling SOP — Suite B &nbsp;·&nbsp; <span class="mono">DOC-2026-04471</span> &nbsp;·&nbsp; v2.0</p></div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><div><h3>Lifecycle Timeline</h3><div class="sub">Draft → AI Review → QA Review → QA Manager Approval → Released</div></div></div>
+
+          <div class="wf-timeline">
+
+            <div class="wf-step">
+              <div class="wf-rail">
+                <div class="wf-dot" style="background:var(--green-600);"><svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                <div class="wf-line"></div>
+              </div>
+              <div class="wf-body">
+                <div class="wf-head-row">
+                  <span class="wf-title">1. Draft</span>
+                  <span class="wf-status-chip" style="background:var(--green-100);color:var(--green-600);">Completed</span>
+                </div>
+                <div class="wf-info">
+                  <span class="wi"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.6"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6" stroke="currentColor" stroke-width="1.6"/></svg>Responsible: <b>R. Okafor, Document Owner</b></span>
+                  <span class="wi"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 7v5l3 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Aug 1, 2026 · 9:14 AM</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="wf-step">
+              <div class="wf-rail">
+                <div class="wf-dot" style="background:var(--green-600);"><svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                <div class="wf-line"></div>
+              </div>
+              <div class="wf-body">
+                <div class="wf-head-row">
+                  <span class="wf-title">2. AI Review</span>
+                  <span class="wf-status-chip" style="background:var(--green-100);color:var(--green-600);">Completed</span>
+                </div>
+                <div class="wf-info">
+                  <span class="wi"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2l1.8 4.3L18 8l-4.2 1.7L12 14l-1.8-4.3L6 8l4.2-1.7L12 2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>Responsible: <b>Veritas AI Engine v4.2</b></span>
+                  <span class="wi"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 7v5l3 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Aug 3, 2026 · 2:47 PM</span>
+                </div>
+                <div class="wf-note">6 findings detected · Risk Score 72 (Medium–High) · Compliance Score 58</div>
+              </div>
+            </div>
+
+            <div class="wf-step">
+              <div class="wf-rail">
+                <div class="wf-dot" style="background:var(--blue-600);"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4" fill="#fff"/></svg></div>
+                <div class="wf-line"></div>
+              </div>
+              <div class="wf-body">
+                <div class="wf-head-row">
+                  <span class="wf-title">3. QA Review</span>
+                  <span class="wf-status-chip" style="background:var(--blue-100);color:var(--blue-600);">In Progress</span>
+                </div>
+                <div class="wf-info">
+                  <span class="wi"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.6"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6" stroke="currentColor" stroke-width="1.6"/></svg>Responsible: <b>J. Martinez, QA Reviewer</b></span>
+                  <span class="wi"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 7v5l3 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Started Aug 5, 2026 · 10:02 AM</span>
+                </div>
+
+                <div class="wf-current-card">
+                  <div class="cc-title">Your action is required</div>
+                  <div class="cc-desc">Review the AI findings and version diff before advancing this document to the QA Manager for final approval.</div>
+                  <div class="wf-actions">
+                    <button class="btn-approve" onclick="wfAction('approve')"><svg viewBox="0 0 24 24" fill="none" width="14" height="14"><path d="M20 6L9 17l-5-5" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Approve</button>
+                    <button class="btn-reject" onclick="wfAction('reject')"><svg viewBox="0 0 24 24" fill="none" width="14" height="14"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>Reject</button>
+                    <button class="btn-modify" onclick="wfAction('modify')"><svg viewBox="0 0 24 24" fill="none" width="14" height="14"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4L16.5 3.5z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Request Modification</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="wf-step">
+              <div class="wf-rail">
+                <div class="wf-dot" style="background:#EEF1F5;color:var(--ink-400);"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" fill="currentColor"/></svg></div>
+                <div class="wf-line"></div>
+              </div>
+              <div class="wf-body">
+                <div class="wf-head-row">
+                  <span class="wf-title" style="color:var(--ink-500);">4. QA Manager Approval</span>
+                  <span class="wf-status-chip" style="background:#EEF1F5;color:var(--ink-500);">Pending</span>
+                </div>
+                <div class="wf-info">
+                  <span class="wi"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.6"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6" stroke="currentColor" stroke-width="1.6"/></svg>Responsible: <b>S. Kaur, QA Manager</b></span>
+                  <span class="wi"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 7v5l3 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Awaiting QA Review</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="wf-step">
+              <div class="wf-rail">
+                <div class="wf-dot" style="background:#EEF1F5;color:var(--ink-400);"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2L4 5v6c0 5 3.4 8.7 8 10 4.6-1.3 8-5 8-10V5l-8-3z" stroke="currentColor" stroke-width="1.5"/></svg></div>
+              </div>
+              <div class="wf-body">
+                <div class="wf-head-row">
+                  <span class="wf-title" style="color:var(--ink-500);">5. Released</span>
+                  <span class="wf-status-chip" style="background:#EEF1F5;color:var(--ink-500);">Not started</span>
+                </div>
+                <div class="wf-info">
+                  <span class="wi"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.6"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6" stroke="currentColor" stroke-width="1.6"/></svg>Responsible: <b>Document Control System</b></span>
+                  <span class="wi"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 7v5l3 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Effective date: 2026-09-01 (target)</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- ============= REPORTS (light extra) ============= -->
+      <div class="view" id="view-reports">
+        <div class="page-head">
+          <div><div class="crumb">Insights</div><h1>Reports</h1><p>Quality system performance across departments.</p></div>
+        </div>
+        <div class="card" style="padding:40px;text-align:center;color:var(--ink-500);font-size:13px;">
+          Report builder — export audit trail, cycle-time, and risk-trend reports as PDF or XLSX.
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div id="toast">
+  <svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  <span id="toast-text">Action completed</span>
+</div>
+
+<script>
+/* -------- ROLE SELECT -------- */
+function selectRole(role){
+  document.getElementById('role-qa').classList.toggle('selected', role==='qa');
+  document.getElementById('role-owner').classList.toggle('selected', role==='owner');
+  window.__role = role;
+}
+window.__role = 'qa';
+
+/* -------- LOGIN -------- */
+function doLogin(){
+  document.getElementById('screen-login').classList.remove('active');
+  const app = document.getElementById('screen-app');
+  app.classList.add('active');
+  app.style.display = 'flex';
+  const isOwner = window.__role === 'owner';
+  document.getElementById('sb-username').textContent = isOwner ? 'R. Okafor' : 'J. Martinez';
+  document.getElementById('sb-role').textContent = isOwner ? 'Document Owner' : 'QA Reviewer';
+  document.getElementById('sb-avatar').textContent = isOwner ? 'RO' : 'JM';
+  showToast('Signed in as ' + (isOwner ? 'Document Owner' : 'QA Reviewer'));
+}
+function logout(){
+  document.getElementById('screen-app').classList.remove('active');
+  document.getElementById('screen-app').style.display = 'none';
+  document.getElementById('screen-login').classList.add('active');
+}
+
+/* -------- VIEW SWITCHING -------- */
+const viewTitles = {
+  dashboard:'Dashboard', documents:'Documents', upload:'Upload Document', aireview:'AI Document Review',
+  risk:'AI Risk Assessment', version:'Version Comparison', workflow:'Approval Workflow', reports:'Reports'
+};
+function showView(name, navEl, skipNav){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+name).classList.add('active');
+  document.getElementById('tb-title').textContent = viewTitles[name] || name;
+  if(!skipNav){
+    document.querySelectorAll('.sb-link').forEach(l=>l.classList.remove('active'));
+    if(navEl) navEl.classList.add('active');
+  } else {
+    document.querySelectorAll('.sb-link').forEach(l=>{
+      l.classList.toggle('active', l.dataset.view === mapToNav(name));
+    });
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function mapToNav(name){
+  if(name==='upload') return 'documents';
+  return name;
+}
+
+/* -------- AI REVIEW PROGRESS ANIM -------- */
+function startAIReview(){
+  const pct = document.getElementById('ai-banner-pct');
+  const title = document.getElementById('ai-banner-title');
+  const sub = document.getElementById('ai-banner-sub');
+  const banner = document.getElementById('ai-banner');
+  let p = 0;
+  title.textContent = 'Analyzing document…';
+  sub.textContent = 'Running completeness, formatting & compliance checks against SOP-TPL-014';
+  banner.style.background = 'linear-gradient(120deg,var(--blue-900),var(--blue-700))';
+  const iv = setInterval(()=>{
+    p += Math.random()*18;
+    if(p>=100){
+      p=100;
+      clearInterval(iv);
+      title.textContent = 'Analysis complete — 6 findings, Medium–High risk';
+      sub.textContent = 'Completed in 3m 12s · Document ready for QA Reviewer';
+      banner.style.background = 'linear-gradient(120deg,#7A3B10,#B4740E)';
+    }
+    pct.textContent = Math.round(p)+'%';
+  }, 260);
+}
+
+/* -------- WORKFLOW ACTIONS -------- */
+function wfAction(type){
+  const msgs = {
+    approve: 'Document approved and routed to QA Manager',
+    reject: 'Document rejected and sent back to owner',
+    modify: 'Modification request sent to Document Owner'
+  };
+  showToast(msgs[type]);
+}
+
+/* -------- TOAST -------- */
+let toastTimer;
+function showToast(msg){
+  const t = document.getElementById('toast');
+  document.getElementById('toast-text').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 2600);
+}
+
+/* -------- SAMPLE DATA -------- */
+const statusChip = (s)=>{
+  const map = {
+    'Draft':'chip-draft','AI Review':'chip-aireview','QA Review':'chip-qareview','Approved':'chip-approved'
+  };
+  return `<span class="chip ${map[s]}"><span class="d"></span>${s}</span>`;
+};
+const riskChip = (r)=>{
+  const map = {'High':'chip-highrisk','Medium':'chip-medrisk','Low':'chip-lowrisk'};
+  return `<span class="chip ${map[r]}"><span class="d"></span>${r}</span>`;
+};
+const docs = [
+  {name:'Aseptic Filling SOP — Suite B', id:'DOC-2026-04471', dept:'Manufacturing', ver:'2.0', status:'QA Review', risk:'High', updated:'2 hours ago'},
+  {name:'Batch Record — Amoxicillin 500mg Lot 4471', id:'DOC-2026-04468', dept:'Manufacturing', ver:'1.0', status:'AI Review', risk:'Medium', updated:'4 hours ago'},
+  {name:'Cleaning Validation Protocol — Line 4', id:'DOC-2026-04455', dept:'Validation', ver:'3.1', status:'Approved', risk:'Low', updated:'Yesterday'},
+  {name:'Deviation Report Form', id:'DOC-2026-04452', dept:'Quality Assurance', ver:'5.0', status:'Draft', risk:'Low', updated:'Yesterday'},
+  {name:'Environmental Monitoring SOP', id:'DOC-2026-04441', dept:'Quality Control', ver:'4.1', status:'Approved', risk:'Medium', updated:'2 days ago'},
+  {name:'Change Control Protocol — Filler Upgrade', id:'DOC-2026-04438', dept:'Engineering', ver:'1.0', status:'QA Review', risk:'High', updated:'3 days ago'},
+  {name:'Training Record Template', id:'DOC-2026-04430', dept:'Quality Assurance', ver:'2.2', status:'Approved', risk:'Low', updated:'3 days ago'},
+  {name:'Master Batch Record — Ibuprofen 200mg', id:'DOC-2026-04421', dept:'Manufacturing', ver:'6.0', status:'AI Review', risk:'Medium', updated:'4 days ago'},
+];
+function rowHTML(d){
+  return `<tr>
+    <td><div class="doc-name">${d.name}</div><div class="doc-id mono">${d.id}</div></td>
+    <td>${d.dept}</td>
+    <td class="mono">${d.ver}</td>
+    <td>${statusChip(d.status)}</td>
+    <td>${riskChip(d.risk)}</td>
+    <td>${d.updated}</td>
+    <td><div class="row-actions"><button class="mini-btn" onclick="showView('aireview',null,true)">Open</button></div></td>
+  </tr>`;
+}
+function typeRowHTML(d,type){
+  return `<tr>
+    <td><div class="doc-name">${d.name}</div><div class="doc-id mono">${d.id}</div></td>
+    <td>${type}</td>
+    <td>${d.dept}</td>
+    <td class="mono">${d.ver}</td>
+    <td>${statusChip(d.status)}</td>
+    <td>${riskChip(d.risk)}</td>
+    <td>${d.updated}</td>
+    <td><div class="row-actions"><button class="mini-btn" onclick="showView('aireview',null,true)">Open</button></div></td>
+  </tr>`;
+}
+document.getElementById('recent-docs-body').innerHTML = docs.slice(0,6).map(rowHTML).join('');
+const types = ['SOP','Batch Record','Protocol','Form','SOP','Protocol','Form','Batch Record'];
+document.getElementById('all-docs-body').innerHTML = docs.map((d,i)=>typeRowHTML(d,types[i])).join('') + docs.map((d,i)=>typeRowHTML({...d,id:d.id.replace('4','5'),name:d.name+' (Rev.)',updated:'Last week'},types[i])).join('');
+</script>
+</body>
+</html>
